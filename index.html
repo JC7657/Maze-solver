@@ -6,16 +6,29 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <script src="maze-data.js"></script>
+    <script src="utils.js"></script>
     <script src="bfs.js"></script>
     <script src="dfs.js"></script>
-    <script src="sketch.js"></script>
+    <script src="sketch.js" defer></script>
     <title>Laberinto</title>
   </head>
   <body>
-    <button id="botonCambiarAlgoritmo">BFS</button>
-    <div
-      id="infoCamino"
-      style="margin-top: 10px; font-family: sans-serif; font-size: 16px"
-    ></div>
+    <!-- Controles fijos en la parte superior -->
+    <div id="controles">
+      <button id="botonCambiarAlgoritmo">BFS</button>
+      <div class="control">
+        <label for="sliderVelocidad">Velocidad:</label>
+        <input
+          type="range"
+          id="sliderVelocidad"
+          min="1"
+          max="50"
+          value="5"
+        />
+        <span id="valorVelocidad">5</span> nodos/frame
+      </div>
+      <div id="infoCamino"></div>
+    </div>
+    <div id="canvasContainer"></div>
   </body>
 </html>

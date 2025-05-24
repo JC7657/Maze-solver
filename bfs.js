@@ -2,14 +2,20 @@ function busquedaAnchura(laberinto, inicio, fin) {
   let cola = [];
   let visitados = {};
   let caminoDesde = {};
+  let ordenVisita = [];
 
   cola.push(inicio);
   visitados[`${inicio.x},${inicio.y}`] = true;
+  ordenVisita.push(inicio);
 
   while (cola.length > 0) {
     let actual = cola.shift();
+
     if (actual.x === fin.x && actual.y === fin.y) {
-      return reconstruirCamino(caminoDesde, actual);
+      return {
+        camino: reconstruirCamino(caminoDesde, actual),
+        explorados: ordenVisita,
+      };
     }
 
     for (let [dx, dy] of [
@@ -31,18 +37,12 @@ function busquedaAnchura(laberinto, inicio, fin) {
       ) {
         visitados[`${nx},${ny}`] = true;
         caminoDesde[`${nx},${ny}`] = actual;
-        cola.push({ x: nx, y: ny });
+        let vecino = { x: nx, y: ny };
+        ordenVisita.push(vecino);
+        cola.push(vecino);
       }
     }
   }
-  return [];
-}
 
-function reconstruirCamino(caminoDesde, actual) {
-  let camino = [actual];
-  while (caminoDesde[`${actual.x},${actual.y}`]) {
-    actual = caminoDesde[`${actual.x},${actual.y}`];
-    camino.push(actual);
-  }
-  return camino.reverse();
+  return { camino: [], explorados: ordenVisita };
 }

@@ -2,14 +2,20 @@ function busquedaProfundidad(laberinto, inicio, fin) {
   let pila = [];
   let visitados = {};
   let caminoDesde = {};
+  let ordenVisita = [];
 
   pila.push(inicio);
   visitados[`${inicio.x},${inicio.y}`] = true;
+  ordenVisita.push(inicio);
 
   while (pila.length > 0) {
     let actual = pila.pop();
+
     if (actual.x === fin.x && actual.y === fin.y) {
-      return reconstruirCamino(caminoDesde, actual);
+      return {
+        camino: reconstruirCamino(caminoDesde, actual),
+        explorados: ordenVisita,
+      };
     }
 
     for (let [dx, dy] of [
@@ -31,18 +37,12 @@ function busquedaProfundidad(laberinto, inicio, fin) {
       ) {
         visitados[`${nx},${ny}`] = true;
         caminoDesde[`${nx},${ny}`] = actual;
-        pila.push({ x: nx, y: ny });
+        let vecino = { x: nx, y: ny };
+        ordenVisita.push(vecino);
+        pila.push(vecino);
       }
     }
   }
-  return [];
-}
 
-function reconstruirCamino(caminoDesde, actual) {
-  let camino = [actual];
-  while (caminoDesde[`${actual.x},${actual.y}`]) {
-    actual = caminoDesde[`${actual.x},${actual.y}`];
-    camino.push(actual);
-  }
-  return camino.reverse();
+  return { camino: [], explorados: ordenVisita };
 }
