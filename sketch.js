@@ -20,6 +20,7 @@ let estadoActual, algoritmoActual, longitudCamino, nodosExplorados;
 let helpPopup, helpOverlay;
 
 function setup() {
+  // Inicializar con el laberinto original
   datosLaberintoActual = [...datosLaberinto];
   
   let cnv = createCanvas(
@@ -39,6 +40,9 @@ function setup() {
   
   // Configurar event listeners
   configurarEventListeners();
+  
+  // Resetear velocidad al estado inicial
+  resetearSlider();
   
   // Inicializar estado
   actualizarEstadoUI();
@@ -148,8 +152,19 @@ function reiniciarAnimacion() {
   paso = 0;
   camino = [];
   explorados = [];
+  
+  // Resetear velocidad al valor por defecto
+  resetearSlider();
+  
   calcularCamino();
   actualizarEstadoUI();
+}
+
+// Función para resetear el slider a su estado inicial
+function resetearSlider() {
+  velocidad = 5;
+  sliderVelocidad.value = 5;
+  valorVelocidad.textContent = 5;
 }
 
 function calcularTotalCaminables() {
@@ -255,7 +270,7 @@ function actualizarEstadoUI() {
   botonRandomize.disabled = estado === 'ejecutando' || estado === 'generando';
   
   if (estado === 'completado') {
-    botonStart.innerHTML = '🔄';
+    botonStart.innerHTML = '¡Otra vez!';
   } else {
     botonStart.innerHTML = '▶';
   }
