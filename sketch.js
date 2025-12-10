@@ -20,7 +20,6 @@ let estadoActual, algoritmoActual, longitudCamino, nodosExplorados;
 let helpPopup, helpOverlay;
 
 function setup() {
-  // Inicializar con el laberinto original
   datosLaberintoActual = [...datosLaberinto];
   
   let cnv = createCanvas(
@@ -119,7 +118,6 @@ function seleccionarAlgoritmo(bfs) {
 
 function iniciarAnimacion() {
   if (estado === 'listo') {
-    // Si no hay camino calculado, calcularlo
     if (camino.length === 0 && explorados.length === 0) {
       calcularCamino();
     }
@@ -130,9 +128,7 @@ function iniciarAnimacion() {
     estado = 'ejecutando';
     actualizarEstadoUI();
   } else if (estado === 'completado') {
-    // Si está completado, reiniciar completamente como el botón de reset
     reiniciarAnimacion();
-    // Y empezar nueva animación automáticamente
     setTimeout(() => {
       estado = 'ejecutando';
       actualizarEstadoUI();
@@ -175,14 +171,12 @@ function generarNuevoLaberinto() {
   // Mostrar estado de generación
   estado = 'generando';
   actualizarEstadoUI();
-  
-  // Usar las EXACTAS dimensiones del laberinto original: 65x61
   const anchoOriginal = 65;
   const altoOriginal = 61;
   
-  console.log(`Generando laberinto de ${anchoOriginal}x${altoOriginal} (exactamente igual que original)`);
+  console.log(`Generando laberinto de ${anchoOriginal}x${altoOriginal}`);
   
-  // Generar nuevo laberinto con las mismas dimensiones exactas
+  // Generar nuevo laberinto
   setTimeout(() => {
     try {
       datosLaberintoActual = generarLaberintoAleatorio(anchoOriginal, altoOriginal);
@@ -210,17 +204,11 @@ function generarNuevoLaberinto() {
         alto: datosLaberintoActual.length
       });
       
-      // Actualizar dimensiones (deben ser exactamente 65x61)
       columnas = datosLaberintoActual[0].length;
       filas = datosLaberintoActual.length;
-      
-      // Redimensionar canvas si es necesario
+    
       resizeCanvas(columnas * tamanoCelda, filas * tamanoCelda);
-      
-      // Recalcular total de celdas caminables para el nuevo laberinto
       calcularTotalCaminables();
-      
-      // Reiniciar animación con nuevo laberinto
       reiniciarAnimacion();
       
       estado = 'listo';
@@ -243,7 +231,7 @@ function generarNuevoLaberinto() {
       estado = 'listo';
       actualizarEstadoUI();
     }
-  }, 100); // Pequeño delay para feedback visual
+  }, 100); // delay para feedback visual
 }
 
 function calcularCamino() {
@@ -262,19 +250,16 @@ function calcularCamino() {
 }
 
 function actualizarEstadoUI() {
-  // Actualizar botones
   botonStart.disabled = estado === 'ejecutando' || estado === 'generando';
   botonPause.disabled = estado !== 'ejecutando';
   botonRandomize.disabled = estado === 'ejecutando' || estado === 'generando';
   
-  // Actualizar texto del botón start (ahora solo icono)
   if (estado === 'completado') {
     botonStart.innerHTML = '🔄';
   } else {
     botonStart.innerHTML = '▶';
   }
   
-  // Actualizar estado
   let estadoTexto = {
     'listo': 'Listo',
     'generando': 'Generando...',
@@ -285,33 +270,24 @@ function actualizarEstadoUI() {
   
   estadoActual.textContent = estadoTexto[estado];
   algoritmoActual.textContent = usarAnchura ? 'BFS' : 'DFS';
-  
-  // Actualizar estadísticas
   actualizarEstadisticas();
 }
-
 function mostrarAyuda() {
   helpPopup.classList.add('show');
   helpOverlay.classList.add('show');
 }
-
 function ocultarAyuda() {
   helpPopup.classList.remove('show');
   helpOverlay.classList.remove('show');
 }
-
 function actualizarEstadisticas() {
   longitudCamino.textContent = camino.length > 0 ? `${camino.length} celdas` : '-';
   let exploradosActuales = Math.min(Math.floor(paso), explorados.length);
   nodosExplorados.textContent = `${exploradosActuales} / ${totalCaminables}`;
 }
-
-
-
 function draw() {
   background(255);
 
-  // Dibuja laberinto completo
   for (let y = 0; y < filas; y++) {
     for (let x = 0; x < columnas; x++) {
       fill(datosLaberintoActual[y][x] === "#" ? 30 : 255);
@@ -320,11 +296,10 @@ function draw() {
     }
   }
 
-  // Dibuja puntos de inicio y fin
-  fill(76, 175, 80); // Verde para inicio
+  fill(76, 175, 80);
   rect(1 * tamanoCelda, 1 * tamanoCelda, tamanoCelda, tamanoCelda);
   
-  fill(244, 67, 54); // Rojo para fin
+  fill(244, 67, 54);
   rect((columnas - 2) * tamanoCelda, (filas - 2) * tamanoCelda, tamanoCelda, tamanoCelda);
 
   // Dibuja exploración
