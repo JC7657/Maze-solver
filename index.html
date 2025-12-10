@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <script src="maze-data.js"></script>
+    <script src="maze-generator.js"></script>
     <script src="utils.js"></script>
     <script src="bfs.js"></script>
     <script src="dfs.js"></script>
@@ -13,22 +14,116 @@
     <title>Laberinto</title>
   </head>
   <body>
-    <!-- Controles fijos en la parte superior -->
-    <div id="controles">
-      <button id="botonCambiarAlgoritmo">BFS</button>
-      <div class="control">
-        <label for="sliderVelocidad">Velocidad:</label>
-        <input
-          type="range"
-          id="sliderVelocidad"
-          min="1"
-          max="50"
-          value="5"
-        />
-        <span id="valorVelocidad">5</span> nodos/frame
+    <div class="main-container">
+      <!-- Panel de controles estático -->
+      <aside id="controles" class="controls-panel">
+        <div class="controls-header">
+          <h3>Panel de Control</h3>
+        </div>
+        
+        <div class="control-section">
+          <h4>Algoritmo<button id="helpBtn" class="help-btn">?</button></h4>
+          <div class="algorithm-buttons">
+            <button id="bfsBtn" class="algo-btn active">BFS</button>
+            <button id="dfsBtn" class="algo-btn">DFS</button>
+          </div>
+        </div>
+
+      <div class="control-section">
+        <h4>Laberinto</h4>
+        <div class="maze-controls">
+          <button id="randomizeBtn" class="control-btn randomize">🎲 Aleatorio</button>
+          <button id="resetBtn" class="control-btn reset">↺ Reiniciar</button>
+        </div>
       </div>
-      <div id="infoCamino"></div>
+
+      <div class="control-section">
+        <h4>Control de Animación</h4>
+        <div class="animation-controls">
+          <button id="startBtn" class="control-btn start">▶</button>
+          <button id="pauseBtn" class="control-btn pause" disabled>⏸</button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h4>Velocidad</h4>
+        <div class="control">
+          <input
+            type="range"
+            id="sliderVelocidad"
+            min="1"
+            max="50"
+            value="5"
+          />
+          <span id="valorVelocidad">5</span>
+        </div>
+      </div>
+
+        <div class="control-section">
+          <h4>Estadísticas</h4>
+          <div id="infoCamino" class="stats">
+            <div class="stat-item">
+              <span class="stat-label">Estado:</span>
+              <span id="estadoActual" class="stat-value">Listo</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Algoritmo:</span>
+              <span id="algoritmoActual" class="stat-value">BFS</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Camino:</span>
+              <span id="longitudCamino" class="stat-value">-</span>
+            </div>
+            <div class="stat-item" title="Celdas exploradas / Total de celdas transitables">
+              <span class="stat-label">Explorados:</span>
+              <span id="nodosExplorados" class="stat-value">0</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- Popup de ayuda -->
+      <div id="helpPopup" class="help-popup">
+        <div class="help-content">
+          <h3>¿Qué son los algoritmos de búsqueda?</h3>
+          
+          <div class="algorithm-section">
+            <h4>BFS (Búsqueda en Anchura)</h4>
+            <p>Explora el laberinto capa por capa, como si se expandiera en círculos. Es ideal para encontrar el camino más corto.</p>
+            <p><strong>Características:</strong></p>
+            <ul>
+              <li>Siempre encuentra el camino más corto</li>
+              <li>Puede requerir más memoria</li>
+              <li>Funciona como un GPS que busca todas las direcciones por igual</li>
+            </ul>
+          </div>
+          
+          <div class="algorithm-section">
+            <h4>DFS (Búsqueda en Profundidad)</h4>
+            <p>Explora tan profundo como pueda por cada camino antes de retroceder. Es como si explorara un túnel hasta el final.</p>
+            <p><strong>Características:</strong></p>
+            <ul>
+              <li>No siempre encuentra el camino más corto</li>
+              <li>Usa menos memoria</li>
+              <li>Funciona como si perdiera un hilo y lo siguiera hasta el final</li>
+            </ul>
+          </div>
+          
+          <div class="algorithm-comparison">
+            <h4>¿Cuál usar?</h4>
+            <p><strong>BFS:</strong> Cuando necesites la solución óptima y más rápida.</p>
+            <p><strong>DFS:</strong> Cuando la memoria es limitada o quieras ver diferentes rutas de exploración.</p>
+          </div>
+          
+          <button id="closeHelp" class="close-help-btn">Entendido</button>
+        </div>
+      </div>
+      
+      <!-- Overlay para el popup -->
+      <div id="helpOverlay" class="help-overlay"></div>
+      
+      <!-- Contenedor del laberinto -->
+      <main id="canvasContainer"></main>
     </div>
-    <div id="canvasContainer"></div>
   </body>
 </html>
